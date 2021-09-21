@@ -1,0 +1,14 @@
+{% extends "blog/base.html" %}
+{% block title %}Топ книг с оценкой 10{% endblock %}
+{% block content %}
+    <h2>Топ книг с оценкой 10</h2>
+
+    {% for post in top_books %}
+        <p>
+            <a href="{{ post.get_absolute_url }}"><b>{{ post.title }}</b>
+                {{ post.book_author }}</a>
+        </p>
+    {% empty %}
+        Нет статей
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "blog/base.html" %}
+{% load blog_tags %}
+{% block title %}My Blog{% endblock %}
+{% block content %}
+    <h1>Книжный блог</h1>
+
+
+    {% if tag %}
+        <h2>Posts tagged with "{{ tag.name }}"</h2>
+    {% endif %}
+
+    {% for post in posts %}
+        <h2>
+        <table width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td class="leftcol">
+
+                    <img src="{{ post.image.url }}" width="150" height="200">
+                </td>
+                <td>
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                    <p class="date">Published {{ post.publish }}
+                        by {{ post.author }}</p>
+                </td>
+            </tr>
+        </table>
+
+        </h2>
+        <p class="tags">
+            Tags:
+            {% for tag in post.tags.all %}
+                <a href="{% url "blog:post_list_by_tag" tag.slug %}">
+                {{ tag.name }}
+                </a>
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+
+        {{ post.body|markdown|truncatewords_html:30 }}
+    {% endfor %}
+    {% include "pagination.html" with page=posts %}
+{% endblock %}

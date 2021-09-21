@@ -1,0 +1,14 @@
+{% extends "blog/base.html" %}
+{% block title %}Список книг по алфавиту{% endblock %}
+{% block content %}
+    <h2>Список книг по алфавиту</h2>
+
+    {% for post in alphabetical_title %}
+        <p>
+            <a href="{{ post.get_absolute_url }}"><b>{{ post.title }}</b>
+                {{ post.book_author }}</a>
+        </p>
+    {% empty %}
+        Нет статей
+    {% endfor %}
+{% endblock %}

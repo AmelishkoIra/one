@@ -1,0 +1,66 @@
+{% extends "blog/base.html" %}
+{% load blog_tags %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
+    <table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td class="leftcol">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" width="350" height="480">
+                {% else %}
+                    <p>Изображение не добавлено</p>
+                {% endif %}
+            </td>
+            <td>
+                <p align="center"><b>Полное название книги:</b>
+                    {{ post.book_title }}</p>
+                <p align="center"><b>Автор:</b> {{ post.book_author }}</p>
+                <p align="center"><b>Оценка:</b> {{ post.book_rating }}</p>
+            </td>
+        </tr>
+    </table>
+
+    <p align="justify">{{ post.body|markdown }}</p>
+
+    <p>
+        <a href="{% url "blog:post_share" post.id %}">Поделиться записью</a>
+    </p>
+
+    <h2>Похожие посты</h2>
+    {% for post in similar_posts %}
+        <p>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </p>
+    {% empty %}
+        Нет похожих постов
+    {% endfor %}
+
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="info">
+                Коментарий {{ forloop.counter }} от {{ comment.name }}
+                {{ comment.created }}
+            </p>
+            {{ comment.body|linebreaks }}
+        </div>
+    {% empty %}
+        <p>Пока нет коментариев</p>
+    {% endfor %}
+
+    {% if new_comment %}
+        <h2>Комментарий был добавлен</h2>
+    {% else %}
+        <h2>Добавить новый комментарий</h2>
+        <form action="." method="post">
+            {{ comment_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Add comment"></p>
+        </form>
+    {% endif %}
+
+    {% with comments.count as total_comments %}
+        <h2>Комментариев: {{ total_comments }}</h2>
+    {% endwith %}
+{% endblock %}
